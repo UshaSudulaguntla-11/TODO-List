@@ -24,9 +24,13 @@ Tasks are saved in a database, so they **persist across sessions**.
 advanced-todo-app/
 │
 ├── app.py # Flask backend
+
 ├── create_db.py # Generates todo.db with sample tasks
+
 ├── requirements.txt # Python dependencies
+
 ├── README.md # This file
+
 └── templates/
 └── index.html # Frontend HTML (Tailwind CSS)
 
@@ -64,5 +68,5 @@ Tasks with deadlines will show time left dynamically.
 
 Screenshots/Demo
 
-Screenshot:
-Deno vedio:
+Screenshot:https://github.com/UshaSudulaguntla-11/TODO-List/blob/main/image.png
+
