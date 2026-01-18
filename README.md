@@ -56,7 +56,7 @@ Add a task using the form on the right side.
 
 Mark tasks as completed by clicking the checkbox.
 
-Delete tasks using the red ✖ icon.
+Delete tasks using the red  icon.
 
 Tasks with deadlines will show time left dynamically.
 
