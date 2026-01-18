@@ -1,20 +1,24 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 import sqlite3
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 app.secret_key = "todo-secret"
 
+# Absolute path for database (always same folder as app.py)
+DB_PATH = os.path.join(os.path.dirname(__file__), "todo.db")
+
+# Function to get database connection
 def get_db():
-    con = sqlite3.connect("todo.db")
+    con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
     return con
 
-@app.route("/")
-def index():
+# Initialize database and table
+def init_db():
     con = get_db()
     cur = con.cursor()
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +28,17 @@ def index():
             completed INTEGER DEFAULT 0
         )
     """)
+    con.commit()
+    con.close()
 
+# Initialize DB when app starts
+init_db()
+
+# Home page
+@app.route("/")
+def index():
+    con = get_db()
+    cur = con.cursor()
     cur.execute("SELECT * FROM tasks")
     rows = cur.fetchall()
     con.close()
@@ -43,7 +57,6 @@ def index():
                 row["due_date"] + " " + row["due_time"],
                 "%Y-%m-%d %H:%M"
             )
-
             diff_seconds = int((due_datetime - now).total_seconds())
             minutes_left = diff_seconds // 60
 
@@ -74,6 +87,7 @@ def index():
         completed=completed_tasks
     )
 
+# Add new task
 @app.route("/add", methods=["POST"])
 def add():
     task = request.form["task"]
@@ -97,6 +111,7 @@ def add():
     flash("✅ Task added", "success")
     return redirect(url_for("index"))
 
+# Toggle completed/incomplete
 @app.route("/toggle/<int:id>")
 def toggle(id):
     con = get_db()
@@ -108,6 +123,7 @@ def toggle(id):
     con.close()
     return redirect(url_for("index"))
 
+# Delete task
 @app.route("/delete/<int:id>")
 def delete(id):
     con = get_db()
@@ -117,8 +133,10 @@ def delete(id):
     con.close()
     return redirect(url_for("index"))
 
+# Run app
 if __name__ == "__main__":
-    app.run( debug=True)
+    app.run(debug=True)
+
 
 
 
